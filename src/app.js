@@ -1,7 +1,8 @@
 
 var HelloWorldLayer = cc.Layer.extend({
     jugador1:null,    
-    jugador2:null,    
+    jugador2:null,
+   // bool1: this.collide,
     pelota:null,    
     puntuacion1:null,
     puntuacion2:null,
@@ -17,7 +18,7 @@ var HelloWorldLayer = cc.Layer.extend({
         this.jugador2 =  new cc.DrawNode();
         this.jugador2.drawRect(cc.p(0,0),cc.p(20,100),color,3);
         this.jugador2.setPosition(size.width -(size.width * 0.1),size.height / 2);
-        this.addChild(this.jugador2, 1);        
+        this.addChild(this.jugador2, 1);  
 
         var lineaDivisoria =  new cc.DrawNode();
         lineaDivisoria.drawSegment(cc.p(size.width/2,0),cc.p(size.width/2,size.height),3,color);
@@ -28,10 +29,10 @@ var HelloWorldLayer = cc.Layer.extend({
         this.pelota.setPosition(size.width / 2,size.height / 2);
         this.addChild(this.pelota, 1);
         if(this.random(0,9) > 5){
-            this.pelota.runAction(cc.sequence(cc.moveBy(70, cc.p(-1090, -150))));
+            this.pelota.runAction(cc.sequence(cc.moveBy(60, cc.p(-1090, -150))));
             
         }else{
-            this.pelota.runAction(cc.sequence(cc.moveBy(70, cc.p(1967, 200))));
+            this.pelota.runAction(cc.sequence(cc.moveBy(60, cc.p(1967, 200))));
             
         }
         
@@ -48,17 +49,38 @@ var HelloWorldLayer = cc.Layer.extend({
     random: function getRandomInt(min, max) {
     	return Math.floor(Math.random() * (max - min + 1)) + min;
 	},
-    
-//    moveBall: function(){
-//        
-//         this.pelota.runAction(cc.sequence(cc.moveBy(20, cc.p(-550, -12))));
-//
-//    },
-    movePlayer: function(keyCode, event){
+    moveball: function()
+    {
+        this.pelota.setPosition(size.width / 2,size.height / 2);
+        if(this.random(0,9) > 5){
+                        this.pelota.runAction(cc.sequence(cc.moveBy(70, cc.p(-1090, -150))));
+
+                    }else{
+                        this.pelota.runAction(cc.sequence(cc.moveBy(70, cc.p(1967, 200))));
+                    }
         
+    },
+    movep2: function()
+    {//ver la position de la bola
+        
+        if(this.pelota.getPositionY() < 300)
+        {
+            if(this.jugador2.getPositionY() <= 500)
+             {
+               this.jugador2.setPosition(this.jugador2.getPositionX(), this.jugador2.getPositionY() + 50);
+                
+             }
+            
+        }else if(this.jugador2.getPositionY() >= 30){
+            this.jugador2.setPosition(this.jugador2.getPositionX(), this.jugador2.getPositionY() - 50);
+        }
+    }
+    ,    
+    movePlayer: function(keyCode, event){
         var target = event.getCurrentTarget();
         var size = cc.winSize;
 
+        
         // Boton Up presionado THIS WORKS
         if(keyCode == 38)
         {
@@ -66,11 +88,16 @@ var HelloWorldLayer = cc.Layer.extend({
              {
                
                target.jugador1.setPosition(target.jugador1.getPositionX(), target.jugador1.getPositionY() + 50);
-            //comprobar limites
-            cc.log("Player1 X:" + target.jugador1.getPositionX() + " Y:" + target.jugador1.getPositionY());
-               //cc.log("Bola X:" + target.pelota.getPositionX() + " Y:" + target.pelota.getPositionY());
-             }
-               
+                 target.movep2();
+                //comprobar limites de pelota
+                if(target.pelota.getPositionX() > 700 || target.pelota.getPositionX() < 100)
+                {
+                    target.moveball();
+                }
+                 cc.log("Player1 X:" + target.jugador1.getPositionX() + " Y:" + target.jugador1.getPositionY());
+
+                 
+              }
         }
         
         // Boton Down presionado THIS WORKS
@@ -79,40 +106,50 @@ var HelloWorldLayer = cc.Layer.extend({
          if(target.jugador1.getPositionY() >= 30)
             {
                 target.jugador1.setPosition(target.jugador1.getPositionX(), target.jugador1.getPositionY() - 50);
-            //comprobar limites
-            cc.log("Player1 X:" + target.jugador1.getPositionX() + " Y:" + target.jugador1.getPositionY());
-            
+                target.movep2();
+                //comprobar limites de la pelota
+                if(target.pelota.getPositionX() > 700 || target.pelota.getPositionX() < 100)
+                {
+                    target.moveball();
+                 //target.inicializar();   Si esto se hace dibuja todo de nuevo  
+                }
+                cc.log("Player1 X:" + target.jugador1.getPositionX() + " Y:" + target.jugador1.getPositionY());
             }
         }
         
         //choca jugador1
-        var J1Place = target.jugador1.getBoundingBox();
-        for(var ball of target.pelota){
-            var ballPlace = ball.getBoundingBox();
-            if(cc.rectIntersectsRect(ballPlace,J1Place) == true){
-                
-              cc.log("Colision weje");
+       /*
+            if(cc.rectIntersectsRect(J1Place, ballPlace))
+            {
+                cc.log("Chocaste");
+                //this.inicializar;
+              
             }
-        }
-        
-        //choca jugador2
-        var J2Place = target.jugador2.getBoundingBox();
-        for(var ball of target.pelota){
-            var ballPlace = ball.getBoundingBox();
-            if(cc.rectIntersectsRect(ballPlace,J2Place) == true){
-                
-              cc.log("Colision weje");
+       
+            if(cc.rectIntersectsRect(J2Place, ballPlace))
+            {
+                cc.log("Choco");
+                //this.inicializar;
+              
             }
-        }
+       */
     },
+//    collide:function() 
+//    {
+//        var b = cc.rectIntersectsRect(this.jugador1.getBoundingBox(), this.pelota.getBoundingBox());
+//        return b;
+//    },
     ctor:function () {
         this._super();
         this.inicializar();
         //aqui escucha el teclado...:D
-        cc.eventManager.addListener({
+        cc.eventManager.addListener
+        (
+            {
 			event: cc.EventListener.KEYBOARD,
-			onKeyPressed:  this.movePlayer
-		}, this);
+			onKeyPressed:  this.movePlayer//bola: this.pelota.getBoundingBox()
+		    }, 
+        this);
 
         return true;
     }
