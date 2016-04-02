@@ -2,11 +2,15 @@
 var HelloWorldLayer = cc.Layer.extend({
     jugador1:null,    
     jugador2:null,
+    p1p:null,
+    p2p:null,
    // bool1: this.collide,
     pelota:null,    
     puntuacion1:null,
     puntuacion2:null,
     inicializar:function(){
+        this.p1p = 0;
+        this.p2p = 0;
         var size = cc.winSize;
         var color = cc.color(100,100,100);
         //este sera el jugador
@@ -51,6 +55,24 @@ var HelloWorldLayer = cc.Layer.extend({
 	},
     moveball: function()
     {
+        //Asignar puntuación NO FUNCIONA
+        if(this.pelota.getPositionX() > this.jugador1.getPositionX())
+        {
+            //Punto para bot
+            this.p2p = this.p2p + 1;
+            this.puntuacion2.setString(this.p2p.toString());
+            //this.puntuacion2 = cc.LabelTTF(this.p2p.toString(),"Arial",24)
+            //this.puntuacion2._originalText = this.p2p.toString();
+            //cc.log("puntuacion 2: " + this.puntuacion2._updateString(this.p2p.toString()));
+        }else{
+            //Punto para jugador1
+            this.p1p = this.p1p + 1;
+            this.puntuacion1.setString(this.p1p.toString());
+           // this.puntuacion1 = cc.LabelTTF(this.p1p.toString(),"Arial",24)
+            //this.puntuacion1._originalText = this.p1p.toString();//this works
+            //cc.log("puntuacion 2: " + this.puntuacion1._updateString(this.p1p.toString()));
+        }
+        var size = cc.winSize;
         this.pelota.setPosition(size.width / 2,size.height / 2);
         if(this.random(0,9) > 5){
                         this.pelota.runAction(cc.sequence(cc.moveBy(70, cc.p(-1090, -150))));
