@@ -103,11 +103,19 @@ var HelloWorldLayer = cc.Layer.extend({
             }
        
     },
-//    collide:function() 
-//    {
-//        var b = cc.rectIntersectsRect(this.jugador1.getBoundingBox(), this.pelota.getBoundingBox());
-//        return b;
-//    },
+collision : function(){
+        if( Math.abs(this.pelota.x - this.jugador1.x) <= 10 && Math.abs(this.pelota.y - this.jugador1.y) <= 100){
+            var moveto = cc.moveTo(this.speed, cc.winSize.width+10, this.random(0, cc.winSize.height));
+            this.pelota.stopAllActions();
+            this.pelota.runAction(moveto);
+        }
+        if( Math.abs(this.pelota.x - this.jugador2.x) <= 10 &&  Math.abs(this.pelota.y - this.jugador2.y) <= 100){
+            var moveto = cc.moveTo(this.speed, -10, this.random(0, cc.winSize.height));
+            this.pelota.stopAllActions();
+            this.pelota.runAction(moveto);
+        }
+    },
+    
     ctor:function () {
         this._super();
         this.inicializar();
